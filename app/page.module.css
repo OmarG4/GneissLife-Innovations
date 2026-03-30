@@ -244,8 +244,14 @@
 }
 
 .tableWrap {
+  --table-header-height: 54px;
+  --table-row-height: 50px;
   width: 100%;
   padding-bottom: 2px;
+}
+
+.tableViewport {
+  max-height: calc(var(--table-header-height) + (var(--table-row-height) * 6));
 }
 
 .table {
@@ -254,11 +260,27 @@
   border-collapse: collapse;
 }
 
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--panel);
+}
+
+.table thead tr {
+  height: var(--table-header-height);
+}
+
+.table tbody tr {
+  height: var(--table-row-height);
+}
+
 .table th,
 .table td {
   padding: 14px 12px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
   text-align: left;
+  white-space: nowrap;
 }
 
 .table th {

@@ -348,7 +348,10 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
           <span>Device {latest?.device_id ?? "unknown"}</span>
         </div>
 
-        <ScrollArea className={styles.tableWrap}>
+        <ScrollArea
+          className={styles.tableWrap}
+          viewportClassName={styles.tableViewport}
+        >
           <table className={styles.table}>
             <thead>
               <tr>
