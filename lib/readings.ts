@@ -11,13 +11,15 @@ const toNumber = (value: unknown) => Number(value ?? 0);
 const normalizeReading = (item: Record<string, unknown>): DeviceReading => ({
   device_id: String(item.device_id ?? "unknown"),
   timestamp: String(item.timestamp ?? new Date().toISOString()),
+  battery_percentage: toNumber(item.battery_percentage ?? item.battery_percenatage),
   battery_v: toNumber(item.battery_v),
   biometric_pressure: toNumber(item.biometric_pressure),
   fan_pwm: toNumber(item.fan_pwm),
   humidity: toNumber(item.humidity),
   iaq: toNumber(item.iaq),
+  mold_risk_score: toNumber(item.mold_risk_score),
   temperature: toNumber(item.temperature),
-  voc: toNumber(item.voc),
+  voc_index: toNumber(item.voc_index ?? item.voc),
 });
 
 const sortReadings = (readings: DeviceReading[]) =>

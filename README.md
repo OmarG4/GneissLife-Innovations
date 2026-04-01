@@ -4,7 +4,7 @@ Simple Next.js dashboard for the `metatron_device_data` DynamoDB table.
 
 ## What it includes
 
-- KPI cards for battery, temperature, humidity, IAQ, and VOC
+- KPI cards for battery, temperature, humidity, IAQ, VOC index, and mold risk
 - A temperature area chart
 - A multi-line air-quality chart
 - A recent readings table

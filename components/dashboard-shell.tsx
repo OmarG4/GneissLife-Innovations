@@ -26,8 +26,7 @@ const metricCards = [
   { key: "temperature", label: "Temperature", unit: "C" },
   { key: "humidity", label: "Humidity", unit: "%" },
   { key: "iaq", label: "IAQ", unit: "" },
-  { key: "voc", label: "VOC", unit: "ppb" },
-  { key: "battery_v", label: "Battery", unit: "V" },
+  { key: "voc_index", label: "VOC Index", unit: "" },
 ] as const;
 
 const formatMetricValue = (value: number, unit: string) => {
@@ -66,7 +65,8 @@ const chartSeries = {
   temperature: { label: "Temperature", color: "#f59e0b", unit: "C" },
   humidity: { label: "Humidity", color: "#0f766e", unit: "%" },
   iaq: { label: "IAQ", color: "#2563eb", unit: "" },
-  voc: { label: "VOC", color: "#b45309", unit: "ppb" },
+  voc_index: { label: "VOC Index", color: "#b45309", unit: "" },
+  mold_risk_score: { label: "Mold Risk", color: "#7c3aed", unit: "" },
 } as const;
 
 type SeriesKey = keyof typeof chartSeries;
@@ -130,6 +130,11 @@ const getAverage = (rows: DeviceReading[], metric: keyof DeviceReading) => {
   return total / rows.length;
 };
 
+const getBatteryLevelWidth = (value: number | undefined) => {
+  const safeValue = Math.max(0, Math.min(100, Number(value ?? 0)));
+  return `${safeValue}%`;
+};
+
 export function DashboardShell({ initialData }: DashboardShellProps) {
   const [data, setData] = useState(initialData);
   const chartsReady = useSyncExternalStore(
@@ -154,8 +159,8 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
     temperature: getAverage(data.readings, "temperature"),
     humidity: getAverage(data.readings, "humidity"),
     iaq: getAverage(data.readings, "iaq"),
-    voc: getAverage(data.readings, "voc"),
-    battery_v: getAverage(data.readings, "battery_v"),
+    voc_index: getAverage(data.readings, "voc_index"),
+    mold_risk_score: getAverage(data.readings, "mold_risk_score"),
   };
 
   const refreshData = () => {
@@ -173,16 +178,35 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
           <p className={styles.eyebrow}>Metatron Telemetry</p>
           <h1 className={styles.title}>Metatron Telemetry</h1>
           <p className={styles.subtitle}>
-            Track battery, air quality, temperature, humidity, and fan behavior from a
-            Next.js dashboard. Live data is pulled server-side from the
+            Track battery, air quality, mold risk, temperature, humidity, and fan
+            behavior from a Next.js dashboard. Live data is pulled server-side from the
             `metatron_device_data` DynamoDB table when AWS credentials are configured.
           </p>
         </div>
 
         <div className={styles.heroActions}>
           <div className={styles.statusCard}>
-            <span className={styles.statusLabel}>Data source</span>
-            <strong>{data.source === "live" ? "AWS DynamoDB" : "Mock sample data"}</strong>
+            <div className={styles.statusHeader}>
+              <div className={styles.statusInfo}>
+                <span className={styles.statusLabel}>Data source</span>
+                <strong>{data.source === "live" ? "AWS DynamoDB" : "Mock sample data"}</strong>
+              </div>
+
+              <div className={styles.batteryStatus}>
+                <span className={styles.batteryPercent}>
+                  {latest ? formatMetricValue(latest.battery_percentage, "%") : "--"}
+                </span>
+                <span className={styles.batteryIcon} aria-hidden="true">
+                  <span className={styles.batteryIconCap} />
+                  <span className={styles.batteryIconBody}>
+                    <span
+                      className={styles.batteryIconLevel}
+                      style={{ width: getBatteryLevelWidth(latest?.battery_percentage) }}
+                    />
+                  </span>
+                </span>
+              </div>
+            </div>
             <span className={styles.statusHint}>{data.message}</span>
           </div>
 
@@ -191,6 +215,19 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
           </button>
         </div>
       </div>
+
+      <article className={styles.moldRiskBanner}>
+        <div>
+          <p className={styles.panelEyebrow}>Primary Signal</p>
+          <h2>Mold risk score</h2>
+        </div>
+        <strong className={styles.moldRiskBannerValue}>
+          {latest ? formatMetricValue(latest.mold_risk_score, "") : "--"}
+        </strong>
+        <span className={styles.moldRiskBannerMeta}>
+          Avg {formatMetricValue(averages.mold_risk_score, "")} across recent readings
+        </span>
+      </article>
 
       <div className={styles.metricGrid}>
         {metricCards.map((card) => (
@@ -273,7 +310,7 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
           <div className={styles.panelHeader}>
             <div>
               <p className={styles.panelEyebrow}>Air Quality</p>
-              <h2>Humidity, IAQ, and VOC</h2>
+              <h2>Humidity, IAQ, VOC Index, and Mold Risk Trend</h2>
             </div>
             <span>Latest at {latest ? formatTimestamp(latest.timestamp) : "--"}</span>
           </div>
@@ -325,8 +362,15 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
                   />
                   <Line
                     type="monotone"
-                    dataKey="voc"
+                    dataKey="voc_index"
                     stroke="#b45309"
+                    strokeWidth={2.5}
+                    dot={false}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="mold_risk_score"
+                    stroke="#7c3aed"
                     strokeWidth={2.5}
                     dot={false}
                   />
@@ -360,7 +404,8 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
                 <th>Temp (C)</th>
                 <th>Humidity (%)</th>
                 <th>IAQ</th>
-                <th>VOC</th>
+                <th>VOC Index</th>
+                <th>Mold Risk</th>
                 <th>Fan PWM</th>
                 <th>Pressure</th>
               </tr>
@@ -373,7 +418,8 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
                   <td>{reading.temperature.toFixed(2)}</td>
                   <td>{reading.humidity.toFixed(2)}</td>
                   <td>{reading.iaq}</td>
-                  <td>{reading.voc}</td>
+                  <td>{reading.voc_index}</td>
+                  <td>{reading.mold_risk_score.toFixed(2)}</td>
                   <td>{reading.fan_pwm}</td>
                   <td>{reading.biometric_pressure.toFixed(2)}</td>
                 </tr>

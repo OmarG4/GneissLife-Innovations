@@ -68,7 +68,8 @@
 
 .statusCard,
 .panel,
-.metricCard {
+.metricCard,
+.moldRiskBanner {
   min-width: 0;
   background: var(--panel);
   border: 1px solid var(--panel-border);
@@ -82,8 +83,66 @@
   padding: 20px;
 }
 
+.statusHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.statusInfo {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.batteryStatus {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.batteryPercent {
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.batteryIcon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.batteryIconCap {
+  width: 4px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.32);
+}
+
+.batteryIconBody {
+  width: 34px;
+  height: 18px;
+  padding: 2px;
+  border: 1.5px solid rgba(15, 23, 42, 0.42);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.batteryIconLevel {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
 .statusCard strong {
+  display: block;
   font-size: 24px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 .statusHint {
@@ -113,6 +172,37 @@
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 16px;
+}
+
+.moldRiskBanner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px 24px;
+  padding: 18px 22px;
+  background:
+    radial-gradient(circle at top right, rgba(124, 58, 237, 0.12), transparent 38%),
+    linear-gradient(135deg, rgba(245, 243, 255, 0.92), rgba(255, 255, 255, 0.98));
+  border-color: rgba(124, 58, 237, 0.18);
+  box-shadow: var(--shadow);
+}
+
+.moldRiskBanner h2 {
+  margin-top: 8px;
+  font-size: 26px;
+  letter-spacing: -0.04em;
+}
+
+.moldRiskBannerValue {
+  font-size: clamp(2.5rem, 5vw, 3.4rem);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  color: #4c1d95;
+}
+
+.moldRiskBannerMeta {
+  grid-column: 1 / -1;
+  color: #6d28d9;
 }
 
 .metricCard {
@@ -314,6 +404,10 @@
   .metricGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .moldRiskBanner {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -334,6 +428,11 @@
   .panelHeader {
     align-items: start;
     flex-direction: column;
+  }
+
+  .statusHeader {
+    flex-direction: column;
+    align-items: start;
   }
 
   .title {
