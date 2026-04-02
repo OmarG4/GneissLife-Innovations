@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore, useTransition } from "react";
+import { ChevronDown, DatabaseZap, Lock, RefreshCw, ShieldAlert } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -20,6 +21,11 @@ import type { DashboardResponse, DeviceReading } from "@/lib/types";
 
 type DashboardShellProps = {
   initialData: DashboardResponse;
+  devices: {
+    id: string;
+    name: string;
+    status: string;
+  }[];
 };
 
 const metricCards = [
@@ -135,8 +141,9 @@ const getBatteryLevelWidth = (value: number | undefined) => {
   return `${safeValue}%`;
 };
 
-export function DashboardShell({ initialData }: DashboardShellProps) {
+export function DashboardShell({ initialData, devices }: DashboardShellProps) {
   const [data, setData] = useState(initialData);
+  const [selectedDeviceId, setSelectedDeviceId] = useState(devices[0]?.id ?? "");
   const chartsReady = useSyncExternalStore(
     () => () => undefined,
     () => true,
@@ -155,6 +162,7 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
     : { top: 8, right: 12, bottom: 8, left: 4 };
 
   const latest = data.readings[0];
+  const selectedDevice = devices.find((device) => device.id === selectedDeviceId) ?? devices[0];
   const averages = {
     temperature: getAverage(data.readings, "temperature"),
     humidity: getAverage(data.readings, "humidity"),
@@ -174,22 +182,56 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
   return (
     <section className={styles.shell}>
       <div className={styles.hero}>
-        <div className={styles.heroContent}>
-          <p className={styles.eyebrow}>Metatron Telemetry</p>
-          <h1 className={styles.title}>Metatron Telemetry</h1>
-          <p className={styles.subtitle}>
-            Track battery, air quality, mold risk, temperature, humidity, and fan
-            behavior from a Next.js dashboard. Live data is pulled server-side from the
-            `metatron_device_data` DynamoDB table when AWS credentials are configured.
-          </p>
+        <div className={styles.heroMain}>
+          <div className={styles.dashboardHeading}>
+            <div>
+              <p className={styles.eyebrow}>Current device</p>
+              <h1 className={styles.title}>Metatron device dashboard</h1>
+            </div>
+
+            <div className={styles.deviceControls}>
+              <label className={styles.deviceField}>
+                <span className={styles.deviceLabel}>Device</span>
+                <div className={styles.deviceSelectWrap}>
+                  <select
+                    className={styles.deviceSelect}
+                    value={selectedDeviceId}
+                    onChange={(event) => setSelectedDeviceId(event.target.value)}
+                  >
+                    {devices.map((device) => (
+                      <option key={device.id} value={device.id}>
+                        {device.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={18} className={styles.deviceSelectIcon} />
+                </div>
+              </label>
+
+              <button type="button" className={styles.addDeviceButton} disabled title="Coming soon">
+                <Lock size={16} />
+                Add New Device
+              </button>
+            </div>
+          </div>
+
+          {selectedDevice ? (
+            <div className={styles.deviceMeta}>
+              <span>
+                <DatabaseZap size={14} />
+                {selectedDevice.id}
+              </span>
+              <span>{selectedDevice.status}</span>
+            </div>
+          ) : null}
         </div>
 
-        <div className={styles.heroActions}>
+        <div className={styles.heroSide}>
           <div className={styles.statusCard}>
             <div className={styles.statusHeader}>
               <div className={styles.statusInfo}>
-                <span className={styles.statusLabel}>Data source</span>
-                <strong>{data.source === "live" ? "AWS DynamoDB" : "Mock sample data"}</strong>
+                <span className={styles.statusLabel}>Current feed</span>
+                <strong>{data.source === "live" ? "DynamoDB simulator feed" : "Mock sample data"}</strong>
               </div>
 
               <div className={styles.batteryStatus}>
@@ -210,15 +252,21 @@ export function DashboardShell({ initialData }: DashboardShellProps) {
             <span className={styles.statusHint}>{data.message}</span>
           </div>
 
-          <button className={styles.refreshButton} onClick={refreshData} disabled={isPending}>
-            {isPending ? "Refreshing..." : "Refresh data"}
-          </button>
+          <div className={styles.actionStack}>
+            <button className={styles.refreshButton} onClick={refreshData} disabled={isPending}>
+              <RefreshCw size={16} className={isPending ? styles.spin : ""} />
+              {isPending ? "Refreshing..." : "Refresh data"}
+            </button>
+          </div>
         </div>
       </div>
 
       <article className={styles.moldRiskBanner}>
         <div>
-          <p className={styles.panelEyebrow}>Primary Signal</p>
+          <div className={styles.signalBadge}>
+            <ShieldAlert size={16} />
+            <p className={styles.panelEyebrow}>Primary Signal</p>
+          </div>
           <h2>Mold risk score</h2>
         </div>
         <strong className={styles.moldRiskBannerValue}>

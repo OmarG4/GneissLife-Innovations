@@ -1,19 +1,18 @@
-# Metatron Dashboard
+# Metatron App
 
-Simple Next.js dashboard for the `metatron_device_data` DynamoDB table.
+Next.js dashboard for the current Metatron monitoring experience.
 
 ## What it includes
 
-- KPI cards for battery, temperature, humidity, IAQ, VOC index, and mold risk
-- A temperature area chart
-- A multi-line air-quality chart
-- A recent readings table
+- Sidebar app layout
+- Device-aware home dashboard
+- Interactive troubleshooting section
 - Server-side DynamoDB access with a mock-data fallback
 
 ## Local setup
 
 1. Copy `.env.example` to `.env.local`
-2. Fill in your AWS credentials and region
+2. Fill in your AWS credentials
 3. Run `npm run dev`
 4. Open [http://localhost:3000](http://localhost:3000)
 
@@ -26,12 +25,8 @@ Simple Next.js dashboard for the `metatron_device_data` DynamoDB table.
 - `DYNAMODB_TABLE_NAME`: defaults to `metatron_device_data`
 - `DEVICE_ID`: optional, but recommended for efficient queries if your table uses `device_id` as the partition key
 
-## DynamoDB notes
+## Current data model
 
-The app will:
-
-- use a `Query` when `DEVICE_ID` is set
-- otherwise use a small `Scan`
-- fall back to mock data if credentials are missing or DynamoDB access fails
-
-If your table key schema is different, update `lib/readings.ts` with the correct query expression.
+- The home dashboard currently uses simulated telemetry coming from DynamoDB.
+- The selected device UI is in place, but `Add New Device` is intentionally disabled.
+- Troubleshooting is available in-app as a reference guide based on the device support flow.

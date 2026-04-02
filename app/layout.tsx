@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Metatron Telemetry",
-  description: "A simple Next.js dashboard for Metatron DynamoDB telemetry.",
+  title: "Metatron",
+  description: "Metatron environmental monitoring dashboard.",
 };
 
 export default function RootLayout({

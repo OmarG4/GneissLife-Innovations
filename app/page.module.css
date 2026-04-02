@@ -1,69 +1,146 @@
 .page {
   min-height: 100vh;
   width: 100%;
-  max-width: 100%;
-  padding: 32px;
+  padding: 24px 24px 32px;
+}
+
+.dashboardStack {
+  display: grid;
+  gap: 18px;
 }
 
 .shell {
-  width: min(1200px, 100%);
+  width: min(1320px, 100%);
   margin: 0 auto;
   min-width: 0;
   display: grid;
-  gap: 24px;
+  gap: 18px;
 }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.85fr);
-  gap: 24px;
-  padding: 28px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.94)),
-    linear-gradient(180deg, rgba(37, 99, 235, 0.02), rgba(15, 23, 42, 0));
-  border: 1px solid var(--panel-border);
-  border-radius: 28px;
-  box-shadow: var(--shadow);
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.7fr);
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.05);
 }
 
-.heroContent {
+.heroMain,
+.heroSide {
   min-width: 0;
+}
+
+.heroMain {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.dashboardHeading {
+  display: grid;
+  gap: 14px;
 }
 
 .eyebrow,
 .panelEyebrow,
 .statusLabel,
-.metricLabel {
+.metricLabel,
+.deviceLabel {
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  font-size: 12px;
-  color: var(--muted);
+  font-size: 11px;
+  color: #64748b;
 }
 
 .title {
-  max-width: 10ch;
-  margin-top: 10px;
-  font-size: clamp(2.75rem, 5.6vw, 4.6rem);
-  line-height: 0.92;
-  letter-spacing: -0.05em;
-  overflow-wrap: anywhere;
+  max-width: 14ch;
+  margin-top: 6px;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+  color: #0f172a;
   text-wrap: balance;
 }
 
-.subtitle {
-  max-width: 60ch;
-  margin-top: 18px;
-  color: #475569;
-  font-size: 16px;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
+.deviceControls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
 }
 
-.heroActions {
+.deviceField {
   display: grid;
-  gap: 16px;
+  gap: 8px;
+}
+
+.deviceSelectWrap {
+  position: relative;
+}
+
+.deviceSelect {
+  width: 100%;
+  min-height: 48px;
+  appearance: none;
+  padding: 0 44px 0 14px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 14px;
+  background: rgba(248, 250, 252, 0.96);
+  color: #0f172a;
+}
+
+.deviceSelectIcon {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  color: #64748b;
+  pointer-events: none;
+}
+
+.addDeviceButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px dashed rgba(148, 163, 184, 0.28);
+  border-radius: 14px;
+  color: #94a3b8;
+  background: rgba(248, 250, 252, 0.88);
+  font-weight: 700;
+  cursor: not-allowed;
+}
+
+.deviceMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #64748b;
+}
+
+.deviceMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.05);
+}
+
+.heroSide {
+  display: grid;
+  gap: 12px;
   align-content: start;
-  min-width: 0;
+}
+
+.actionStack {
+  display: grid;
+  gap: 10px;
 }
 
 .statusCard,
@@ -71,16 +148,16 @@
 .metricCard,
 .moldRiskBanner {
   min-width: 0;
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  border-radius: 24px;
-  backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.05);
 }
 
 .statusCard {
   display: grid;
-  gap: 8px;
-  padding: 20px;
+  gap: 10px;
+  padding: 18px;
 }
 
 .statusHeader {
@@ -92,21 +169,34 @@
 
 .statusInfo {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
+}
+
+.statusCard strong {
+  display: block;
+  font-size: 20px;
+  line-height: 1.2;
+  color: #0f172a;
+}
+
+.statusHint {
+  color: #64748b;
+  line-height: 1.65;
 }
 
 .batteryStatus {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex-shrink: 0;
 }
 
 .batteryPercent {
-  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
   font-weight: 800;
   line-height: 1;
+  color: #0f172a;
 }
 
 .batteryIcon {
@@ -119,16 +209,16 @@
   width: 4px;
   height: 12px;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.32);
+  background: rgba(15, 23, 42, 0.26);
 }
 
 .batteryIconBody {
   width: 34px;
   height: 18px;
   padding: 2px;
-  border: 1.5px solid rgba(15, 23, 42, 0.42);
+  border: 1.5px solid rgba(15, 23, 42, 0.28);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(248, 250, 252, 0.95);
 }
 
 .batteryIconLevel {
@@ -138,97 +228,102 @@
   background: linear-gradient(135deg, #22c55e, #16a34a);
 }
 
-.statusCard strong {
-  display: block;
-  font-size: 24px;
-  line-height: 1.15;
-  overflow-wrap: anywhere;
-}
-
-.statusHint {
-  color: #475569;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-}
-
 .refreshButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
-  padding: 14px 18px;
-  border: 1px solid rgba(37, 99, 235, 0.14);
-  border-radius: 16px;
-  color: #ffffff;
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
-  cursor: pointer;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 14px;
   font-weight: 700;
-  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.18);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  color: #f8fafc;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
 }
 
 .refreshButton:disabled {
   cursor: wait;
-  opacity: 0.75;
+  opacity: 0.72;
 }
 
-.metricGrid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 16px;
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+
+.signalBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.05);
+  color: #475569;
 }
 
 .moldRiskBanner {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px 24px;
-  padding: 18px 22px;
+  gap: 12px 20px;
+  padding: 20px 22px;
   background:
-    radial-gradient(circle at top right, rgba(124, 58, 237, 0.12), transparent 38%),
-    linear-gradient(135deg, rgba(245, 243, 255, 0.92), rgba(255, 255, 255, 0.98));
-  border-color: rgba(124, 58, 237, 0.18);
-  box-shadow: var(--shadow);
+    linear-gradient(135deg, rgba(254, 242, 242, 0.88), rgba(255, 255, 255, 0.95)),
+    radial-gradient(circle at top right, rgba(248, 113, 113, 0.1), transparent 34%);
 }
 
 .moldRiskBanner h2 {
-  margin-top: 8px;
-  font-size: 26px;
+  margin-top: 10px;
+  font-size: 24px;
   letter-spacing: -0.04em;
+  color: #111827;
 }
 
 .moldRiskBannerValue {
-  font-size: clamp(2.5rem, 5vw, 3.4rem);
+  font-size: clamp(2.3rem, 5vw, 3rem);
   line-height: 0.92;
-  letter-spacing: -0.05em;
-  color: #4c1d95;
+  letter-spacing: -0.06em;
+  color: #991b1b;
 }
 
 .moldRiskBannerMeta {
   grid-column: 1 / -1;
-  color: #6d28d9;
+  color: #7f1d1d;
+}
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .metricCard {
   display: grid;
-  gap: 10px;
-  padding: 20px;
+  gap: 8px;
+  padding: 18px;
 }
 
 .metricValue {
-  font-size: 32px;
+  font-size: clamp(1.75rem, 3vw, 2.2rem);
   line-height: 1;
+  color: #0f172a;
 }
 
 .metricSubtle {
-  color: var(--muted);
+  color: #64748b;
 }
 
 .chartGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 18px;
 }
 
 .panel {
-  padding: 22px;
-  box-shadow: var(--shadow);
+  padding: 20px;
 }
 
 .panelHeader {
@@ -236,7 +331,7 @@
   justify-content: space-between;
   align-items: end;
   gap: 12px;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .panelHeader > * {
@@ -245,14 +340,14 @@
 
 .panelHeader h2 {
   margin-top: 8px;
-  font-size: 26px;
+  font-size: 22px;
   letter-spacing: -0.04em;
+  color: #0f172a;
 }
 
 .panelHeader span {
-  color: var(--muted);
+  color: #64748b;
   text-align: right;
-  overflow-wrap: anywhere;
 }
 
 .chartWrap {
@@ -265,32 +360,31 @@
   height: 100%;
   border-radius: 18px;
   background:
-    linear-gradient(180deg, rgba(148, 163, 184, 0.08), rgba(148, 163, 184, 0.03)),
+    linear-gradient(180deg, rgba(226, 232, 240, 0.56), rgba(248, 250, 252, 0.88)),
     repeating-linear-gradient(
       180deg,
       transparent,
-      transparent 36px,
-      rgba(148, 163, 184, 0.08) 36px,
-      rgba(148, 163, 184, 0.08) 37px
+      transparent 34px,
+      rgba(148, 163, 184, 0.08) 34px,
+      rgba(148, 163, 184, 0.08) 35px
     );
 }
 
 .chartTooltip {
   min-width: 220px;
   max-width: min(280px, calc(100vw - 32px));
-  padding: 14px 14px 12px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
-  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.12);
-  backdrop-filter: blur(16px);
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.1);
 }
 
 .chartTooltipLabel {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   color: #64748b;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -323,19 +417,19 @@
 .chartTooltipName {
   color: #334155;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .chartTooltipValue {
   color: #0f172a;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   white-space: nowrap;
 }
 
 .tableWrap {
-  --table-header-height: 54px;
-  --table-row-height: 50px;
+  --table-header-height: 52px;
+  --table-row-height: 48px;
   width: 100%;
   padding-bottom: 2px;
 }
@@ -354,7 +448,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--panel);
+  background: rgba(255, 255, 255, 0.96);
 }
 
 .table thead tr {
@@ -367,15 +461,15 @@
 
 .table th,
 .table td {
-  padding: 14px 12px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  padding: 12px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
   text-align: left;
   white-space: nowrap;
 }
 
 .table th {
-  color: var(--muted);
-  font-size: 12px;
+  color: #64748b;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -384,9 +478,15 @@
   color: #0f172a;
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 1280px) {
   .metricGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -396,13 +496,12 @@
   }
 
   .hero,
-  .chartGrid,
-  .metricGrid {
+  .chartGrid {
     grid-template-columns: 1fr;
   }
 
-  .metricGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .deviceControls {
+    grid-template-columns: 1fr;
   }
 
   .moldRiskBanner {
@@ -411,40 +510,34 @@
 }
 
 @media (max-width: 640px) {
-  .hero,
-  .panel,
-  .metricCard {
-    border-radius: 20px;
+  .page {
+    padding: 14px;
   }
 
-  .hero {
-    padding: 20px;
+  .hero,
+  .panel,
+  .metricCard,
+  .statusCard,
+  .moldRiskBanner {
+    border-radius: 20px;
+    padding: 18px;
   }
 
   .metricGrid {
     grid-template-columns: 1fr;
   }
 
-  .panelHeader {
-    align-items: start;
-    flex-direction: column;
-  }
-
+  .panelHeader,
   .statusHeader {
     flex-direction: column;
     align-items: start;
   }
 
-  .title {
-    max-width: none;
-    font-size: clamp(2.3rem, 11vw, 3.2rem);
-  }
-
-  .subtitle {
-    max-width: none;
+  .deviceMeta {
+    gap: 8px;
   }
 
   .chartWrap {
-    height: 292px;
+    height: 286px;
   }
 }
