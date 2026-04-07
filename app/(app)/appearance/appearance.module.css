@@ -1,0 +1,191 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  gap: 14px;
+  width: min(1040px, calc(100% - 20px));
+  margin: 0 auto;
+  padding: 10px 10px 20px;
+}
+
+.header,
+.option,
+.optionActive {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--panel-border);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, var(--panel-strong), var(--panel)),
+    radial-gradient(circle at top right, var(--hero-orb), transparent 42%);
+  box-shadow: var(--shadow);
+}
+
+.header {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.headerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-border);
+  background: linear-gradient(180deg, var(--accent-soft-strong), var(--accent-soft));
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.eyebrow,
+.optionEyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.headerText {
+  display: grid;
+  gap: 8px;
+}
+
+.headerText h1 {
+  font-size: clamp(2rem, 7vw, 3rem);
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+  color: var(--text);
+}
+
+.headerDescription {
+  max-width: 40ch;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.grid {
+  display: grid;
+  gap: 12px;
+}
+
+.option,
+.optionActive {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  padding: 18px;
+  text-align: left;
+  background: linear-gradient(180deg, var(--panel-strong), var(--panel-subtle));
+  transition:
+    background 160ms ease,
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.option:hover,
+.optionActive {
+  transform: translateY(-1px);
+  border-color: var(--accent-border);
+  box-shadow: var(--shadow-strong);
+}
+
+.option:hover {
+  background:
+    linear-gradient(180deg, var(--panel-strong), var(--panel)),
+    radial-gradient(circle at top right, var(--hero-orb), transparent 36%);
+}
+
+.optionActive {
+  background:
+    linear-gradient(180deg, var(--panel-strong), var(--panel)),
+    radial-gradient(circle at top right, var(--hero-orb), transparent 34%);
+}
+
+.optionTop {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.optionTop h2 {
+  max-width: 16ch;
+  margin-top: 4px;
+  font-size: 1.45rem;
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+  color: var(--text);
+}
+
+.optionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-border);
+  background: linear-gradient(180deg, var(--accent-soft-strong), var(--accent-soft));
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.optionDescription {
+  max-width: 32ch;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.optionFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.optionSwatches {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.optionSwatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.1);
+}
+
+.optionHint {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (min-width: 720px) {
+  .page {
+    width: min(1040px, calc(100% - 36px));
+    padding: 18px 0 28px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1180px) {
+  .page {
+    width: min(1040px, calc(100% - 48px));
+    padding: 24px 0 32px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

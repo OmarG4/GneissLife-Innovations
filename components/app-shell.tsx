@@ -7,6 +7,7 @@ import {
   CircleHelp,
   LayoutDashboard,
   LogIn,
+  Palette,
   PanelLeftClose,
   PanelLeftOpen,
   UserPlus,
@@ -19,12 +20,14 @@ type AppShellProps = {
 
 const navigationItems = [
   { href: "/", label: "Home", icon: LayoutDashboard },
+  { href: "/appearance", label: "Appearance", icon: Palette },
   { href: "/troubleshoot", label: "Troubleshoot", icon: CircleHelp },
 ] as const;
 
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -36,7 +39,10 @@ export function AppShell({ children }: AppShellProps) {
     const syncSidebarState = () => {
       const mobile = mediaQuery.matches;
       setIsMobile(mobile);
-      setSidebarOpen(!mobile);
+
+      if (!mobile) {
+        setMobileSidebarOpen(false);
+      }
     };
 
     syncSidebarState();
@@ -45,21 +51,59 @@ export function AppShell({ children }: AppShellProps) {
     return () => mediaQuery.removeEventListener("change", syncSidebarState);
   }, []);
 
-  const desktopCollapsed = !sidebarOpen && !isMobile;
+  useEffect(() => {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    document.body.style.overflow = isMobile && mobileSidebarOpen ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobile, mobileSidebarOpen]);
+
+  const sidebarOpen = isMobile ? mobileSidebarOpen : desktopSidebarOpen;
+  const desktopCollapsed = !desktopSidebarOpen && !isMobile;
+  const toggleSidebar = () => {
+    if (isMobile) {
+      setMobileSidebarOpen((open) => !open);
+      return;
+    }
+
+    setDesktopSidebarOpen((open) => !open);
+  };
 
   return (
     <div className={desktopCollapsed ? styles.frameCollapsed : styles.frame}>
+      {isMobile ? (
+        <div className={styles.mobileTopBar}>
+          <button
+            type="button"
+            className={styles.mobileMenuTrigger}
+            onClick={toggleSidebar}
+            aria-expanded={mobileSidebarOpen}
+            aria-controls="control-center-sidebar"
+            aria-label={mobileSidebarOpen ? "Close Control Center" : "Open Control Center"}
+          >
+            {mobileSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
+            <span>Control Center</span>
+          </button>
+        </div>
+      ) : null}
+
       {sidebarOpen && isMobile ? (
         <button
           type="button"
           className={styles.overlay}
-          onClick={() => setSidebarOpen(false)}
+          onClick={() => setMobileSidebarOpen(false)}
           aria-hidden="true"
           tabIndex={-1}
         />
       ) : null}
 
       <aside
+        id="control-center-sidebar"
         className={
           sidebarOpen ? styles.sidebarOpen : isMobile ? styles.sidebarClosed : styles.sidebarRail
         }
@@ -68,9 +112,10 @@ export function AppShell({ children }: AppShellProps) {
           <button
             type="button"
             className={styles.globalToggle}
-            onClick={() => setSidebarOpen((open) => !open)}
+            onClick={toggleSidebar}
             aria-expanded={sidebarOpen}
-            aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+            aria-label={sidebarOpen ? "Collapse Control Center" : "Expand Control Center"}
+            aria-controls="control-center-sidebar"
           >
             {sidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
           </button>
@@ -81,6 +126,9 @@ export function AppShell({ children }: AppShellProps) {
             <>
               <p className={styles.eyebrow}>Metatron</p>
               <h1 className={styles.brandTitle}>Control Center</h1>
+              <p className={styles.brandNote}>
+                Device controls, appearance settings, and system routes.
+              </p>
             </>
           ) : null}
         </div>
@@ -96,6 +144,11 @@ export function AppShell({ children }: AppShellProps) {
                 href={item.href}
                 className={isActive ? styles.navLinkActive : styles.navLink}
                 title={desktopCollapsed ? item.label : undefined}
+                onClick={() => {
+                  if (isMobile) {
+                    setMobileSidebarOpen(false);
+                  }
+                }}
               >
                 <Icon size={18} />
                 {!desktopCollapsed ? <span>{item.label}</span> : null}

@@ -68,11 +68,11 @@ const formatChartTimestamp = (timestamp: string, compact: boolean) =>
   }).format(new Date(timestamp));
 
 const chartSeries = {
-  temperature: { label: "Temperature", color: "#f59e0b", unit: "C" },
-  humidity: { label: "Humidity", color: "#0f766e", unit: "%" },
-  iaq: { label: "IAQ", color: "#2563eb", unit: "" },
-  voc_index: { label: "VOC Index", color: "#b45309", unit: "" },
-  mold_risk_score: { label: "Mold Risk", color: "#7c3aed", unit: "" },
+  temperature: { label: "Temperature", color: "var(--chart-temperature)", unit: "C" },
+  humidity: { label: "Humidity", color: "var(--chart-humidity)", unit: "%" },
+  iaq: { label: "IAQ", color: "var(--chart-iaq)", unit: "" },
+  voc_index: { label: "VOC Index", color: "var(--chart-voc)", unit: "" },
+  mold_risk_score: { label: "Mold Risk", color: "var(--chart-mold)", unit: "" },
 } as const;
 
 type SeriesKey = keyof typeof chartSeries;
@@ -311,15 +311,15 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                 <AreaChart data={[...data.readings].reverse()} margin={chartMargin}>
                   <defs>
                     <linearGradient id="temperatureFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.22} />
-                      <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.01} />
+                      <stop offset="5%" stopColor="var(--chart-temperature)" stopOpacity={0.22} />
+                      <stop offset="95%" stopColor="var(--chart-temperature)" stopOpacity={0.01} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid stroke="rgba(148, 163, 184, 0.22)" vertical={false} />
+                  <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
                   <XAxis
                     dataKey="timestamp"
                     tickFormatter={(value) => formatChartTimestamp(String(value), isCompactChart)}
-                    tick={{ fill: "#64748b", fontSize: isCompactChart ? 10 : 12 }}
+                    tick={{ fill: "var(--chart-axis)", fontSize: isCompactChart ? 10 : 12 }}
                     tickLine={false}
                     axisLine={false}
                     interval="preserveStartEnd"
@@ -328,7 +328,7 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                     tickMargin={isCompactChart ? 8 : 12}
                   />
                   <YAxis
-                    tick={{ fill: "#64748b", fontSize: isCompactChart ? 10 : 12 }}
+                    tick={{ fill: "var(--chart-axis)", fontSize: isCompactChart ? 10 : 12 }}
                     tickLine={false}
                     axisLine={false}
                     domain={["dataMin - 1", "dataMax + 1"]}
@@ -337,12 +337,12 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                   />
                   <Tooltip
                     content={<ChartTooltip />}
-                    cursor={{ stroke: "rgba(100, 116, 139, 0.28)", strokeDasharray: "4 4" }}
+                    cursor={{ stroke: "var(--chart-cursor)", strokeDasharray: "4 4" }}
                   />
                   <Area
                     type="monotone"
                     dataKey="temperature"
-                    stroke="#f59e0b"
+                    stroke="var(--chart-temperature)"
                     fill="url(#temperatureFill)"
                     strokeWidth={3}
                   />
@@ -371,11 +371,11 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                 minHeight={chartMinHeight}
               >
                 <LineChart data={[...data.readings].reverse()} margin={chartMargin}>
-                  <CartesianGrid stroke="rgba(148, 163, 184, 0.22)" vertical={false} />
+                  <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
                   <XAxis
                     dataKey="timestamp"
                     tickFormatter={(value) => formatChartTimestamp(String(value), isCompactChart)}
-                    tick={{ fill: "#64748b", fontSize: isCompactChart ? 10 : 12 }}
+                    tick={{ fill: "var(--chart-axis)", fontSize: isCompactChart ? 10 : 12 }}
                     tickLine={false}
                     axisLine={false}
                     interval="preserveStartEnd"
@@ -384,7 +384,7 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                     tickMargin={isCompactChart ? 8 : 12}
                   />
                   <YAxis
-                    tick={{ fill: "#64748b", fontSize: isCompactChart ? 10 : 12 }}
+                    tick={{ fill: "var(--chart-axis)", fontSize: isCompactChart ? 10 : 12 }}
                     tickLine={false}
                     axisLine={false}
                     width={isCompactChart ? 48 : 64}
@@ -392,33 +392,33 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                   />
                   <Tooltip
                     content={<ChartTooltip />}
-                    cursor={{ stroke: "rgba(100, 116, 139, 0.28)", strokeDasharray: "4 4" }}
+                    cursor={{ stroke: "var(--chart-cursor)", strokeDasharray: "4 4" }}
                   />
                   <Line
                     type="monotone"
                     dataKey="humidity"
-                    stroke="#0f766e"
+                    stroke="var(--chart-humidity)"
                     strokeWidth={2.5}
                     dot={false}
                   />
                   <Line
                     type="monotone"
                     dataKey="iaq"
-                    stroke="#2563eb"
+                    stroke="var(--chart-iaq)"
                     strokeWidth={2.5}
                     dot={false}
                   />
                   <Line
                     type="monotone"
                     dataKey="voc_index"
-                    stroke="#b45309"
+                    stroke="var(--chart-voc)"
                     strokeWidth={2.5}
                     dot={false}
                   />
                   <Line
                     type="monotone"
                     dataKey="mold_risk_score"
-                    stroke="#7c3aed"
+                    stroke="var(--chart-mold)"
                     strokeWidth={2.5}
                     dot={false}
                   />

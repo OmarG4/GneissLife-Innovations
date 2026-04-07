@@ -1,14 +1,185 @@
 :root {
-  --bg: #f8fafc;
-  --bg-accent: #eef2f7;
-  --panel: rgba(255, 255, 255, 0.84);
+  --bg-radial: rgba(15, 23, 42, 0.03);
+  --bg-start: #fcfcfd;
+  --bg-mid: #f7f8fa;
+  --bg-end: #f1f4f8;
+  --panel: rgba(255, 255, 255, 0.88);
+  --panel-strong: rgba(255, 255, 255, 0.98);
+  --panel-subtle: rgba(248, 250, 252, 0.96);
   --panel-border: rgba(148, 163, 184, 0.16);
-  --text: #0f172a;
+  --panel-border-strong: rgba(148, 163, 184, 0.28);
+  --sidebar-bg: rgba(250, 251, 252, 0.97);
+  --topbar-bg: rgba(248, 250, 252, 0.92);
+  --text: #172033;
   --muted: #64748b;
-  --highlight: #0f172a;
-  --highlight-soft: rgba(15, 23, 42, 0.05);
-  --warm: #f97316;
+  --highlight-soft: rgba(15, 23, 42, 0.04);
+  --accent: #9a5b2f;
+  --accent-strong: #773f1a;
+  --accent-soft: rgba(119, 63, 26, 0.11);
+  --accent-soft-strong: rgba(119, 63, 26, 0.2);
+  --accent-border: rgba(119, 63, 26, 0.26);
+  --accent-contrast: #fffdfb;
+  --hero-orb: rgba(119, 63, 26, 0.08);
+  --hero-edge: rgba(119, 63, 26, 0.08);
+  --metric-wash: rgba(119, 63, 26, 0.1);
+  --banner-wash: rgba(119, 63, 26, 0.18);
   --shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  --shadow-strong: 0 24px 60px rgba(15, 23, 42, 0.1);
+  --overlay: rgba(15, 23, 42, 0.16);
+  --button-bg-start: #9b623c;
+  --button-bg-end: #773f1a;
+  --button-shadow: rgba(119, 63, 26, 0.22);
+  --callout-bg: rgba(119, 63, 26, 0.12);
+  --callout-text: #773f1a;
+  --code-bg: #18212d;
+  --code-text: #edf3fa;
+  --scroll-track: rgba(148, 163, 184, 0.12);
+  --scroll-thumb-start: rgba(155, 98, 60, 0.9);
+  --scroll-thumb-end: rgba(119, 63, 26, 0.86);
+  --placeholder-top: rgba(232, 237, 243, 0.84);
+  --placeholder-line: rgba(148, 163, 184, 0.08);
+  --chart-axis: #64748b;
+  --chart-grid: rgba(148, 163, 184, 0.18);
+  --chart-cursor: rgba(100, 116, 139, 0.28);
+  --chart-temperature: #9b623c;
+  --chart-humidity: #a67c52;
+  --chart-iaq: #773f1a;
+  --chart-voc: #8e5330;
+  --chart-mold: #5e2e12;
+}
+
+[data-theme="smokey"] {
+  --bg-radial: rgba(226, 232, 240, 0.06);
+  --bg-start: #0b1220;
+  --bg-mid: #0f172a;
+  --bg-end: #131c31;
+  --panel: rgba(18, 27, 44, 0.92);
+  --panel-strong: rgba(23, 34, 54, 0.98);
+  --panel-subtle: rgba(27, 39, 61, 0.96);
+  --sidebar-bg: rgba(13, 21, 36, 0.97);
+  --topbar-bg: rgba(15, 23, 42, 0.92);
+  --text: #e8edf5;
+  --muted: #94a3b8;
+  --panel-border: rgba(148, 163, 184, 0.14);
+  --panel-border-strong: rgba(148, 163, 184, 0.22);
+  --highlight-soft: rgba(148, 163, 184, 0.08);
+  --accent: #94a3b8;
+  --accent-strong: #f8fafc;
+  --accent-soft: rgba(148, 163, 184, 0.12);
+  --accent-soft-strong: rgba(148, 163, 184, 0.22);
+  --accent-border: rgba(148, 163, 184, 0.22);
+  --accent-contrast: #f8fafc;
+  --hero-orb: rgba(148, 163, 184, 0.08);
+  --hero-edge: rgba(148, 163, 184, 0.08);
+  --metric-wash: rgba(148, 163, 184, 0.1);
+  --banner-wash: rgba(148, 163, 184, 0.18);
+  --shadow: 0 18px 40px rgba(2, 6, 23, 0.3);
+  --shadow-strong: 0 24px 60px rgba(2, 6, 23, 0.42);
+  --overlay: rgba(2, 6, 23, 0.42);
+  --button-bg-start: #475569;
+  --button-bg-end: #1e293b;
+  --button-shadow: rgba(2, 6, 23, 0.34);
+  --callout-bg: rgba(148, 163, 184, 0.12);
+  --callout-text: #e2e8f0;
+  --code-bg: #0f172a;
+  --code-text: #e5edf7;
+  --scroll-track: rgba(148, 163, 184, 0.1);
+  --scroll-thumb-start: rgba(148, 163, 184, 0.88);
+  --scroll-thumb-end: rgba(71, 85, 105, 0.86);
+  --placeholder-top: rgba(37, 50, 72, 0.9);
+  --placeholder-line: rgba(148, 163, 184, 0.08);
+  --chart-axis: #94a3b8;
+  --chart-grid: rgba(148, 163, 184, 0.14);
+  --chart-cursor: rgba(148, 163, 184, 0.24);
+  --chart-temperature: #fbbf24;
+  --chart-humidity: #2dd4bf;
+  --chart-iaq: #60a5fa;
+  --chart-voc: #fb923c;
+  --chart-mold: #c084fc;
+}
+
+[data-theme="copper"] {
+  --panel-border: rgba(5, 56, 114, 0.18);
+  --panel-border-strong: rgba(5, 56, 114, 0.28);
+  --highlight-soft: rgba(5, 56, 114, 0.05);
+  --accent: #2c5c97;
+  --accent-strong: #053872;
+  --accent-soft: rgba(5, 56, 114, 0.11);
+  --accent-soft-strong: rgba(5, 56, 114, 0.2);
+  --accent-border: rgba(5, 56, 114, 0.28);
+  --accent-contrast: #fffdfb;
+  --hero-orb: rgba(5, 56, 114, 0.08);
+  --hero-edge: rgba(5, 56, 114, 0.08);
+  --metric-wash: rgba(199, 104, 26, 0.11);
+  --banner-wash: rgba(5, 56, 114, 0.18);
+  --button-bg-start: #2c5c97;
+  --button-bg-end: #053872;
+  --button-shadow: rgba(5, 56, 114, 0.22);
+  --callout-bg: rgba(5, 56, 114, 0.12);
+  --callout-text: #053872;
+  --scroll-thumb-start: rgba(44, 92, 151, 0.9);
+  --scroll-thumb-end: rgba(5, 56, 114, 0.86);
+  --chart-temperature: #c7681a;
+  --chart-humidity: #0f766e;
+  --chart-iaq: #053872;
+  --chart-voc: #2c5c97;
+  --chart-mold: #1d4f91;
+}
+
+[data-theme="sage"] {
+  --panel-border: rgba(188, 184, 138, 0.2);
+  --panel-border-strong: rgba(188, 184, 138, 0.3);
+  --highlight-soft: rgba(188, 184, 138, 0.06);
+  --accent: #9e9a6f;
+  --accent-strong: #bcb88a;
+  --accent-soft: rgba(188, 184, 138, 0.12);
+  --accent-soft-strong: rgba(188, 184, 138, 0.22);
+  --accent-border: rgba(188, 184, 138, 0.3);
+  --accent-contrast: #fffaff;
+  --hero-orb: rgba(188, 184, 138, 0.08);
+  --hero-edge: rgba(160, 145, 194, 0.08);
+  --metric-wash: rgba(188, 184, 138, 0.11);
+  --banner-wash: rgba(160, 145, 194, 0.18);
+  --button-bg-start: #c8c39b;
+  --button-bg-end: #a091c2;
+  --button-shadow: rgba(160, 145, 194, 0.22);
+  --callout-bg: rgba(188, 184, 138, 0.12);
+  --callout-text: #8a865b;
+  --scroll-thumb-start: rgba(200, 195, 155, 0.9);
+  --scroll-thumb-end: rgba(160, 145, 194, 0.86);
+  --chart-temperature: #a39f72;
+  --chart-humidity: #7a9b6d;
+  --chart-iaq: #bcb88a;
+  --chart-voc: #9a8bd0;
+  --chart-mold: #8b78c8;
+}
+
+[data-theme="quartz"] {
+  --panel-border: rgba(109, 128, 153, 0.18);
+  --panel-border-strong: rgba(71, 85, 105, 0.28);
+  --highlight-soft: rgba(71, 85, 105, 0.05);
+  --accent: #6d8099;
+  --accent-strong: #172130;
+  --accent-soft: rgba(109, 128, 153, 0.11);
+  --accent-soft-strong: rgba(109, 128, 153, 0.2);
+  --accent-border: rgba(109, 128, 153, 0.28);
+  --accent-contrast: #fbfdff;
+  --hero-orb: rgba(109, 128, 153, 0.08);
+  --hero-edge: rgba(109, 128, 153, 0.08);
+  --metric-wash: rgba(109, 128, 153, 0.1);
+  --banner-wash: rgba(109, 128, 153, 0.18);
+  --button-bg-start: #7f97b4;
+  --button-bg-end: #2f3d52;
+  --button-shadow: rgba(47, 61, 82, 0.22);
+  --callout-bg: rgba(109, 128, 153, 0.12);
+  --callout-text: #2b3749;
+  --scroll-thumb-start: rgba(127, 151, 180, 0.9);
+  --scroll-thumb-end: rgba(47, 61, 82, 0.86);
+  --chart-temperature: #9aa7b8;
+  --chart-humidity: #8191a6;
+  --chart-iaq: #6d8099;
+  --chart-voc: #425268;
+  --chart-mold: #172130;
 }
 
 html {
@@ -25,11 +196,14 @@ body {
   min-height: 100vh;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(15, 23, 42, 0.035), transparent 24%),
-    linear-gradient(180deg, #f8fafc 0%, #f3f6fb 55%, #eef2f7 100%);
+    radial-gradient(circle at top left, var(--bg-radial), transparent 24%),
+    linear-gradient(180deg, var(--bg-start) 0%, var(--bg-mid) 55%, var(--bg-end) 100%);
   font-family: var(--font-geist-sans), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition:
+    background 220ms ease,
+    color 220ms ease;
 }
 
 a {
