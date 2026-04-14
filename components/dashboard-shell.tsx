@@ -1,7 +1,16 @@
 "use client";
 
 import { useState, useSyncExternalStore, useTransition } from "react";
-import { ChevronDown, DatabaseZap, Lock, RefreshCw, ShieldAlert } from "lucide-react";
+import {
+  ArrowDownRight,
+  ArrowRight,
+  ArrowUpRight,
+  ChevronDown,
+  DatabaseZap,
+  Lock,
+  RefreshCw,
+  ShieldAlert,
+} from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -31,13 +40,17 @@ type DashboardShellProps = {
 const metricCards = [
   { key: "temperature", label: "Temperature", unit: "C" },
   { key: "humidity", label: "Humidity", unit: "%" },
-  { key: "iaq", label: "IAQ", unit: "" },
   { key: "voc_index", label: "VOC Index", unit: "" },
+  { key: "biometric_pressure", label: "Pressure", unit: "hPa" },
 ] as const;
 
 const formatMetricValue = (value: number, unit: string) => {
   const formatted =
     unit === "" ? value.toFixed(0) : value % 1 === 0 ? value.toFixed(0) : value.toFixed(2);
+
+  if (unit.startsWith("/")) {
+    return `${formatted}${unit}`;
+  }
 
   return `${formatted}${unit ? ` ${unit}` : ""}`;
 };
@@ -72,7 +85,7 @@ const chartSeries = {
   humidity: { label: "Humidity", color: "var(--chart-humidity)", unit: "%" },
   iaq: { label: "IAQ", color: "var(--chart-iaq)", unit: "" },
   voc_index: { label: "VOC Index", color: "var(--chart-voc)", unit: "" },
-  mold_risk_score: { label: "Mold Risk", color: "var(--chart-mold)", unit: "" },
+  mold_risk_score_display: { label: "Mold Risk", color: "var(--chart-mold)", unit: "/100" },
 } as const;
 
 type SeriesKey = keyof typeof chartSeries;
@@ -141,6 +154,22 @@ const getBatteryLevelWidth = (value: number | undefined) => {
   return `${safeValue}%`;
 };
 
+const normalizeRiskScore = (value: number) => (value <= 1 ? value * 100 : value);
+
+const formatRiskScore = (value: number | undefined) => {
+  if (typeof value !== "number") {
+    return "--";
+  }
+
+  return `${Math.round(normalizeRiskScore(value))}/100`;
+};
+
+const trendIcons = {
+  up: ArrowUpRight,
+  down: ArrowDownRight,
+  steady: ArrowRight,
+} as const;
+
 export function DashboardShell({ initialData, devices }: DashboardShellProps) {
   const [data, setData] = useState(initialData);
   const [selectedDeviceId, setSelectedDeviceId] = useState(devices[0]?.id ?? "");
@@ -162,13 +191,18 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
     : { top: 8, right: 12, bottom: 8, left: 4 };
 
   const latest = data.readings[0];
+  const insights = data.insights;
+  const TrendIcon = trendIcons[insights.trend.direction];
+  const chartData = [...data.readings].reverse().map((reading) => ({
+    ...reading,
+    mold_risk_score_display: normalizeRiskScore(reading.mold_risk_score),
+  }));
   const selectedDevice = devices.find((device) => device.id === selectedDeviceId) ?? devices[0];
   const averages = {
     temperature: getAverage(data.readings, "temperature"),
     humidity: getAverage(data.readings, "humidity"),
-    iaq: getAverage(data.readings, "iaq"),
     voc_index: getAverage(data.readings, "voc_index"),
-    mold_risk_score: getAverage(data.readings, "mold_risk_score"),
+    biometric_pressure: getAverage(data.readings, "biometric_pressure"),
   };
 
   const refreshData = () => {
@@ -231,7 +265,7 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
             <div className={styles.statusHeader}>
               <div className={styles.statusInfo}>
                 <span className={styles.statusLabel}>Current feed</span>
-                <strong>{data.source === "live" ? "DynamoDB simulator feed" : "Mock sample data"}</strong>
+                <strong>{data.source === "live" ? "Live readings" : "Sample readings"}</strong>
               </div>
 
               <div className={styles.batteryStatus}>
@@ -249,7 +283,9 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                 </span>
               </div>
             </div>
-            <span className={styles.statusHint}>{data.message}</span>
+            <span className={styles.statusHint}>
+              {latest ? `Latest update ${formatTimestamp(latest.timestamp)}` : "Waiting for readings"}
+            </span>
           </div>
 
           <div className={styles.actionStack}>
@@ -270,12 +306,64 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
           <h2>Mold risk score</h2>
         </div>
         <strong className={styles.moldRiskBannerValue}>
-          {latest ? formatMetricValue(latest.mold_risk_score, "") : "--"}
+          {Math.round(insights.status.score)}/100
         </strong>
-        <span className={styles.moldRiskBannerMeta}>
-          Avg {formatMetricValue(averages.mold_risk_score, "")} across recent readings
-        </span>
+        <div className={styles.moldRiskBannerMeta}>
+          <span>
+            Current Status: {insights.status.label.toUpperCase()} [{Math.round(insights.status.score)}]
+          </span>
+          <span className={styles.trendLabel}>
+            <TrendIcon size={16} />
+            Trend: {insights.trend.label}
+          </span>
+        </div>
       </article>
+
+      <div className={styles.summaryGrid}>
+        <article className={styles.panel}>
+          <div className={styles.panelHeader}>
+            <div>
+              <p className={styles.panelEyebrow}>Environmental Conditions</p>
+              <h2>Current environment</h2>
+            </div>
+          </div>
+          <div className={styles.conditionGrid}>
+            <span>Temp: {latest ? formatMetricValue(latest.temperature, "C") : "--"}</span>
+            <span>Humid: {latest ? formatMetricValue(latest.humidity, "%") : "--"}</span>
+            <span>VOC: {latest ? formatMetricValue(latest.voc_index, "") : "--"}</span>
+            <span>Press: {latest ? formatMetricValue(latest.biometric_pressure, "hPa") : "--"}</span>
+          </div>
+        </article>
+
+        <article className={styles.panel}>
+          <div className={styles.panelHeader}>
+            <div>
+              <p className={styles.panelEyebrow}>Prediction</p>
+              <h2>1-hour outlook</h2>
+            </div>
+            <span>{Math.round(insights.prediction.score)}/100</span>
+          </div>
+          <p className={styles.forecastText}>{insights.prediction.forecast}</p>
+          <span className={styles.predictionLabel}>Forecast: {insights.prediction.label}</span>
+        </article>
+
+        <article className={styles.panel}>
+          <div className={styles.panelHeader}>
+            <div>
+              <p className={styles.panelEyebrow}>Key Risk Factors</p>
+              <h2>Primary drivers</h2>
+            </div>
+          </div>
+          <div className={styles.riskFactorList}>
+            {insights.riskFactors.map((factor) => (
+              <div className={styles.riskFactorRow} key={factor.label}>
+                <span>{factor.label}</span>
+                <strong>{factor.points} pts</strong>
+              </div>
+            ))}
+          </div>
+        </article>
+      </div>
 
       <div className={styles.metricGrid}>
         {metricCards.map((card) => (
@@ -295,10 +383,10 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
         <article className={styles.panel}>
           <div className={styles.panelHeader}>
             <div>
-              <p className={styles.panelEyebrow}>Thermals</p>
-              <h2>Temperature trend</h2>
+              <p className={styles.panelEyebrow}>Risk History</p>
+              <h2>Mold risk trend</h2>
             </div>
-            <span>{data.readings.length} recent readings</span>
+            <span>{insights.historyLabel}</span>
           </div>
           <div className={styles.chartWrap}>
             {chartsReady ? (
@@ -308,11 +396,11 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                 minWidth={0}
                 minHeight={chartMinHeight}
               >
-                <AreaChart data={[...data.readings].reverse()} margin={chartMargin}>
+                <AreaChart data={chartData} margin={chartMargin}>
                   <defs>
-                    <linearGradient id="temperatureFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--chart-temperature)" stopOpacity={0.22} />
-                      <stop offset="95%" stopColor="var(--chart-temperature)" stopOpacity={0.01} />
+                    <linearGradient id="moldRiskFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--chart-mold)" stopOpacity={0.24} />
+                      <stop offset="95%" stopColor="var(--chart-mold)" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
@@ -331,7 +419,7 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                     tick={{ fill: "var(--chart-axis)", fontSize: isCompactChart ? 10 : 12 }}
                     tickLine={false}
                     axisLine={false}
-                    domain={["dataMin - 1", "dataMax + 1"]}
+                    domain={[0, 100]}
                     width={isCompactChart ? 48 : 64}
                     tickMargin={isCompactChart ? 6 : 10}
                   />
@@ -341,9 +429,9 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                   />
                   <Area
                     type="monotone"
-                    dataKey="temperature"
-                    stroke="var(--chart-temperature)"
-                    fill="url(#temperatureFill)"
+                    dataKey="mold_risk_score_display"
+                    stroke="var(--chart-mold)"
+                    fill="url(#moldRiskFill)"
                     strokeWidth={3}
                   />
                 </AreaChart>
@@ -358,7 +446,7 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
           <div className={styles.panelHeader}>
             <div>
               <p className={styles.panelEyebrow}>Air Quality</p>
-              <h2>Humidity, IAQ, VOC Index, and Mold Risk Trend</h2>
+              <h2>Environmental trend</h2>
             </div>
             <span>Latest at {latest ? formatTimestamp(latest.timestamp) : "--"}</span>
           </div>
@@ -370,7 +458,7 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                 minWidth={0}
                 minHeight={chartMinHeight}
               >
-                <LineChart data={[...data.readings].reverse()} margin={chartMargin}>
+                <LineChart data={chartData} margin={chartMargin}>
                   <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
                   <XAxis
                     dataKey="timestamp"
@@ -412,13 +500,6 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                     type="monotone"
                     dataKey="voc_index"
                     stroke="var(--chart-voc)"
-                    strokeWidth={2.5}
-                    dot={false}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="mold_risk_score"
-                    stroke="var(--chart-mold)"
                     strokeWidth={2.5}
                     dot={false}
                   />
@@ -467,7 +548,7 @@ export function DashboardShell({ initialData, devices }: DashboardShellProps) {
                   <td>{reading.humidity.toFixed(2)}</td>
                   <td>{reading.iaq}</td>
                   <td>{reading.voc_index}</td>
-                  <td>{reading.mold_risk_score.toFixed(2)}</td>
+                  <td>{formatRiskScore(reading.mold_risk_score)}</td>
                   <td>{reading.fan_pwm}</td>
                   <td>{reading.biometric_pressure.toFixed(2)}</td>
                 </tr>

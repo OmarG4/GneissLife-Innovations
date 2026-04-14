@@ -1,4 +1,5 @@
 import { QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { buildDashboardInsights } from "@/lib/dashboard-insights";
 import { getDocumentClient } from "@/lib/dynamodb";
 import { mockReadings } from "@/lib/mock-data";
 import type { DashboardResponse, DeviceReading } from "@/lib/types";
@@ -52,12 +53,14 @@ async function fetchLiveReadings(): Promise<DashboardResponse | null> {
       const queryItems = (queryResponse.Items ?? []).map((item) =>
         normalizeReading(item as Record<string, unknown>),
       );
+      const readings = sortReadings(queryItems);
 
       return {
         source: "live",
         tableName,
         message: `Live query for device ${configuredDeviceId}.`,
-        readings: sortReadings(queryItems),
+        readings,
+        insights: buildDashboardInsights(readings),
       };
     }
 
@@ -71,12 +74,14 @@ async function fetchLiveReadings(): Promise<DashboardResponse | null> {
     const scanItems = (scanResponse.Items ?? []).map((item) =>
       normalizeReading(item as Record<string, unknown>),
     );
+    const readings = sortReadings(scanItems).slice(0, DEFAULT_LIMIT);
 
     return {
       source: "live",
       tableName,
       message: "Live scan from DynamoDB. Set DEVICE_ID for a more efficient query.",
-      readings: sortReadings(scanItems).slice(0, DEFAULT_LIMIT),
+      readings,
+      insights: buildDashboardInsights(readings),
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown DynamoDB error";
@@ -86,6 +91,7 @@ async function fetchLiveReadings(): Promise<DashboardResponse | null> {
       tableName,
       message: `Fell back to mock data because DynamoDB could not be read: ${message}`,
       readings: mockReadings,
+      insights: buildDashboardInsights(mockReadings),
     };
   }
 }
@@ -103,5 +109,6 @@ export async function getDashboardData(): Promise<DashboardResponse> {
     message:
       "Showing sample readings until AWS credentials are configured or live records become available.",
     readings: mockReadings,
+    insights: buildDashboardInsights(mockReadings),
   };
 }

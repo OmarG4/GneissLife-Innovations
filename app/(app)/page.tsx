@@ -13,8 +13,8 @@ export default async function Home() {
       name: "Metatron Demo Device",
       status:
         dashboardData.source === "live"
-          ? "Connected via DynamoDB feed"
-          : "Using mock telemetry feed",
+          ? "Receiving latest readings"
+          : "Showing sample readings",
     },
   ];
 
